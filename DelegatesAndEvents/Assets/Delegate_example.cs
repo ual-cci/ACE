@@ -1,54 +1,53 @@
 
+using System;
 using UnityEngine;
-using System.Collections; 
-
+using System.Collections;
+using Random = UnityEngine.Random;
+using UnityEngine.Events;
 
 public class Delegate_example : MonoBehaviour
 {
     
     //defining Delegates 
-    public delegate void OnButtonClickDelegate();
-    public static OnButtonClickDelegate buttonClickDelegate;
+    //public delegate void OnButtonClickDelegate(); 
+    //public static OnButtonClickDelegate buttonClickDelegate;
     
     //another way to do it is use an event, which is a bit safer in Unity
-    // public delegate Event OnButtonClickDelegate();
-    // public static event OnButtonClickDelegate buttonClickDelegate;
-    //
+     public delegate void OnButtonClickDelegate();
+     public static event OnButtonClickDelegate buttonClickDelegate;
+    
     private Renderer colorChanger; 
     // Start is called before the first frame update
     void Start()
     
-    {    buttonClickDelegate += myCustomMethod; 
+    {    
+         buttonClickDelegate += myCustomMethod; 
          buttonClickDelegate += anotherMethod;
          colorChanger = gameObject.GetComponent<Renderer>(); 
-         
-         //second way
-         //Delegatehandler.buttonClickDelegate += myCustomMethod; 
-         //Delegatehandler.buttonClickDelegate += anotherMethod;
- 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+  
         
-    }
-
-    private void OnMouseUp()
-    {
-        buttonClickDelegate();
     }
 
     public void myCustomMethod()
     {
-        Debug.Log("I ran!");
-        transform.Translate(Vector3.up);
+        colorChanger.material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)); 
     }
-    
 
     public void anotherMethod()
     {
-        colorChanger.material.color =
-            new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        transform.Translate(Vector3.down);
+        return;
+    }
+
+    public void OnMouseUp()
+    {
+        buttonClickDelegate();
+        return;
+    }
+
+    public void OnDisable()
+    {
+        buttonClickDelegate -= myCustomMethod; 
+        buttonClickDelegate -= anotherMethod;
     }
 }
